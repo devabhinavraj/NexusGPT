@@ -1,6 +1,7 @@
 langchain
 langchain-core
 langchain-community
-pypdf
+langchain-ollama
+faiss-cpu
 pymupdf
 python-docx
