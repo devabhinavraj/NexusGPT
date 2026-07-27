@@ -14,8 +14,3 @@ def load_pdf():
     )
     pdf_documents = dir_loader.load()
     return pdf_documents
-
-
-if __name__ == "__main__":
-    pdf_documents = load_pdf()
-    print(f"Total pages loaded: {len(pdf_documents)}")
