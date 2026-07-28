@@ -1,4 +1,5 @@
 ## Import the functions
+import os
 from loaders.pdf_loaders import load_pdf
 from rag.chunking import create_chunks
 from models.embedding import get_embedding
@@ -8,20 +9,48 @@ from models.llm import get_llm
 from rag.prompt import get_prompt
 from rag.document_chain import get_doc_chain
 from rag.retrieval_chain import get_retrieval_chain
+from models.vector_store import save_vector_local
+from models.vector_store import load_vector_local
 
 
 def main():
-    # Load PDF
-    documents = load_pdf()
-
-    # Create Chunks
-    chunks = create_chunks(documents)
 
     # Load Embedding Model
     embedding_model = get_embedding()
 
-    # Create Vector Store
-    vector_store = create_vector_store(chunks, embedding_model)
+    db_path = "vector_database"
+
+    # Check if Vector Store already exists
+    if os.path.exists(db_path):
+
+        print("Loading existing Vector Store...")
+
+        vector_store = load_vector_local(
+            db_path,
+            embedding_model
+        )
+
+    else:
+
+        print("Creating new Vector Store...")
+
+        # Load PDF
+        documents = load_pdf()
+
+        # Create Chunks
+        chunks = create_chunks(documents)
+
+        # Create Vector Store
+        vector_store = create_vector_store(
+            chunks,
+            embedding_model
+        )
+
+        # Save Vector Store
+        save_vector_local(
+            vector_store,
+            db_path
+        )
 
     # Create Retriever
     retriever = get_retriever(vector_store)
