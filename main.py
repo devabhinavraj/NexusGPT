@@ -36,6 +36,11 @@ def main():
 
         # Load PDF
         documents = load_pdf()
+        print("="*80)
+        print("DOCUMENTS PAGE CONTENET")
+        print("="*80)
+        print(documents[0].page_content[:4000])
+        print("="*80)
 
         # Create Chunks
         chunks = create_chunks(documents)
@@ -64,21 +69,52 @@ def main():
     # Create Document Chain
     chain = get_doc_chain(model, prompt)
 
-    # Create Retrieval Chain
+    # # Create Retrieval Chain
+    # retrieval_chain = get_retrieval_chain(retriever, chain)
+
+    
+    query = input("Ask NexusGPT...")
+
+    # -------------------------
+    # Debug: Retrieved Chunks
+    # -------------------------
+    docs = retriever.invoke(query)
+
+    print("\n" + "=" * 80)
+    print("Retrieved Chunks")
+    print("=" * 80)
+
+    for i, doc in enumerate(docs):
+        print(f"\nChunk {i+1}")
+        print(doc.page_content)
+        print("-" * 80)
+
+    # -------------------------
+    # RAG Answer
+    # -------------------------
     retrieval_chain = get_retrieval_chain(retriever, chain)
 
-    # User Query
-    query = input("Enter your Query: ")
-
-    # Get Answer
     result = retrieval_chain.invoke(
         {
             "input": query
         }
     )
 
-    print(f"\nQuery: {query}")
-    print(f"NexusGPT: {result['answer']}")
+    print("\nNexusGPT:", result["answer"])
+
+    # # User Query
+    # while True:
+    #     query = input("Ask NexusGPT...")
+    #     if query.lower().strip() == "exit":
+    #         print("Thank you for using NexusGPT! ❤️\n")
+    #         break
+    #     # Get Answer
+    #     result = retrieval_chain.invoke(
+    #         {
+    #             "input": query
+    #         }
+    #     )
+    #     print(f"NexusGPT: {result['answer']}\n")
 
 
 if __name__ == "__main__":
