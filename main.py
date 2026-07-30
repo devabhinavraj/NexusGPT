@@ -12,7 +12,6 @@ from rag.retrieval_chain import get_retrieval_chain
 from models.vector_store import save_vector_local
 from models.vector_store import load_vector_local
 
-
 def main():
 
     # Load Embedding Model
@@ -66,6 +65,7 @@ def main():
 
     # Create Retrieval Chain
     retrieval_chain = get_retrieval_chain(retriever, chain)
+
 
     # User Query
     while True:
