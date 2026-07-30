@@ -11,6 +11,9 @@ from rag.document_chain import get_doc_chain
 from rag.retrieval_chain import get_retrieval_chain
 from models.vector_store import save_vector_local
 from models.vector_store import load_vector_local
+from memory import ConversationalMemory
+
+
 
 def main():
 
@@ -66,6 +69,8 @@ def main():
     # Create Retrieval Chain
     retrieval_chain = get_retrieval_chain(retriever, chain)
 
+    # Conversational Memory
+    memory = ConversationalMemory()
 
     # User Query
     while True:
@@ -73,13 +78,22 @@ def main():
         if query.lower().strip() == "exit":
             print("Thank you for using NexusGPT! ❤️\n")
             break
+
         # Get Answer
         result = retrieval_chain.invoke(
             {
-                "input": query
+                "input": query,
+                "chat_history" : memory.get_chat_history()
+
             }
         )
+        # Print Answer
         print(f"NexusGPT: {result['answer']}\n")
+
+        # Save Conversation
+        memory.add_human_message(message  = query)
+        memory.add_ai_message(message=result['answer'])
+    print(memory.get_chat_history())
 
 
 if __name__ == "__main__":
